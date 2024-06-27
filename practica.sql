@@ -104,11 +104,14 @@ GO
 
 
 --ejercicio 3
-CREATE PROCEDURE spListarFacturasPorAño
+ALTER PROCEDURE spListarFacturasPorAño
 	@date varchar(4)
 AS
-	SELECT * from facturas
+	SELECT f.*
+	from facturas f
 	WHERE fecha like CONCAT(@date,'%') 
+	AND f.importe < (SELECT CONVERT(DECIMAL(10,2), AVG(importe)) from facturas WHERE idCliente = f.idCliente)
+	GROUP BY f.idFactura, f.importe, f.fecha, f.idCliente, f.idVendedor, f.iva, f.descuento
 GO
 EXEC spListarFacturasPorAño '2024'
 GO
