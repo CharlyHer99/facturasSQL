@@ -1,4 +1,4 @@
-USE MASTER
+USE master
 GO
 
 CREATE DATABASE practica
@@ -35,17 +35,18 @@ nombre varchar(50),
 direccion varchar(150),
 estatus int,
 codigoPostal int,
-ciudad varchar(50),
+ciudad int,
 vendedorActual int,
-CONSTRAINT fk_venddedorActual_cliente FOREIGN KEY (vendedorActual) REFERENCES vendedores(idVendedor)
+CONSTRAINT fk_venddedorActual_cliente FOREIGN KEY (vendedorActual) REFERENCES vendedores(idVendedor),
+CONSTRAINT fk_ciudad_cliente FOREIGN KEY (ciudad) REFERENCES ciudades(idCiudad)
 )
 GO
 INSERT INTO clientes VALUES
-('Carlos Hernández', 'Gardenia #168', 1, 36416, 'Purísima', 1), 
-('Miguel Hernández', 'Gardenia #168', 1, 36416, 'Purísima', 4),
-('´Ramiro Rendon', 'Morelos #16', 0, 36400, 'Purísima', 5),
-('Paulina Guerrero', 'Veneros #132', 1, 35600, 'León', 1),
-('Bruno Pinilla', 'Torres #220', 0, 35400, 'Silao', 2)
+('Carlos Hernández', 'Gardenia #168', 1, 36416, 1, 1), 
+('Miguel Hernández', 'Gardenia #168', 1, 36416, 1, 4),
+('´Ramiro Rendon', 'Morelos #16', 0, 36400, 1, 5),
+('Paulina Guerrero', 'Veneros #132', 1, 35600, 2, 1),
+('Bruno Pinilla', 'Torres #220', 0, 35400, 5, 2)
 GO
 
 CREATE TABLE articulos(
@@ -102,13 +103,12 @@ INSERT INTO detalleFacturas VALUES
 GO
 
 
-
-
 --ejercicio 3
 CREATE PROCEDURE spListarFacturasPorAño
 	@date varchar(4)
 AS
-	SELECT * from facturas WHERE fecha like CONCAT(@date,'%')
+	SELECT * from facturas
+	WHERE fecha like CONCAT(@date,'%') 
 GO
 EXEC spListarFacturasPorAño '2024'
 GO
@@ -128,12 +128,22 @@ CREATE PROCEDURE spClinteVendedorCiudad
 	@estatus int
 AS
 	IF @estatus < 2
-		SELECT c.* from clientes c 
-		WHERE estatus = @estatus
+		SELECT DISTINCT c.nombre, cc.nombre AS CiudadCliente, cv.nombre ciudadVendedor 
+		FROM clientes c 
+		INNER JOIN vendedores v ON c.vendedorActual = v.idVendedor
+		INNER JOIN ciudades cc ON c.ciudad = cc.idCiudad
+		INNER JOIN ciudades cv ON v.idPueblo= cv.idCiudad
+		WHERE cc.idCiudad <> cv.idCiudad
+		AND estatus = @estatus
 	ELSE
-		SELECT * FROM clientes
+		SELECT DISTINCT c.nombre, cc.nombre AS CiudadCliente, cv.nombre ciudadVendedor 
+		FROM clientes c 
+		INNER JOIN vendedores v ON c.vendedorActual = v.idVendedor
+		INNER JOIN ciudades cc ON c.ciudad = cc.idCiudad
+		INNER JOIN ciudades cv ON v.idPueblo= cv.idCiudad
+		WHERE cc.idCiudad <> cv.idCiudad
 GO
-EXEC spClinteVendedorCiudad 1
+EXEC spClinteVendedorCiudad 2
 GO
 
 
@@ -182,3 +192,5 @@ END
 GO
 SELECT dbo.obtenerPromedioImportePorVendedor(1, '02') as promedio
 GO
+
+
