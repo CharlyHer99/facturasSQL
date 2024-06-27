@@ -5,7 +5,7 @@ USE practica
 GO
 
 CREATE TABLE ciudades(
-idCiudad int not null primary key(1,1),
+idCiudad int not null primary key identity(1,1),
 nombre varchar(50)
 )
 GO
@@ -47,7 +47,7 @@ INSERT INTO clientes VALUES
 GO
 
 CREATE TABLE articulos(
-idArticulo int not null primary key idedntity(1,1),
+idArticulo int not null primary key identity(1,1),
 descripcion varchar(200),
 precio decimal(10,2),
 stock int,
@@ -67,14 +67,14 @@ idCliente int,
 idVendedor int,
 iva decimal(10, 2),
 descuento decimal(10, 2),
-CONSTRAINT fk_idCliente_facturas FOREIGN KEY (idCliente) REFERENCES clientes(idCliente)
+CONSTRAINT fk_idCliente_facturas FOREIGN KEY (idCliente) REFERENCES clientes(idCliente),
 CONSTRAINT fk_idVendedor_facturas FOREIGN KEY (idVendedor) REFERENCES vendedores(idVendedor)
 )
 GO
 INSERT INTO facturas VALUES
 (2000.00, '2024-05-20', 1, 1, 20.00, 10), (1500.00, '2024-04-28', 2, 4, 20.00, 5),
-(300.00, '2024-01-10', 3, 5, 20.00, 15), (23,300.00, '2024-05-12', 4, 1, 20.00, 30),
-(2900.00, '2024-03-07', 5, 2, 20.00, 9), (12900.00, '2024-02-16', 1, 1, 20.00, 20),
+(300.00, '2024-01-10', 3, 5, 20.00, 15), (23300.00, '2024-05-12', 4, 1, 20.00, 30),
+(2900.00, '2024-03-07', 5, 2, 20.00, 9), (12900.00, '2024-02-16', 1, 1, 20.00, 20)
 GO
 
 CREATE TABLE detalleFacturas(
@@ -94,3 +94,6 @@ INSERT INTO detalleFacturas VALUES
 (4, 1, 150, 1800), (4, 2, 15, 2500), (4, 3, 150, 4500),(4, 4, 30, 6000),  (4, 5, 25, 3500), (4, 6, 200, 5000),
 (5, 1, 75, 900), (5, 2, 20, 1000), (5, 4, 5, 1000), 
 (6, 1, 100, 1200), (6, 2, 20, 1000), (6, 3, 100, 3000), (6, 4, 15, 3000),  (6, 5, 10, 700), (6, 6, 100, 4000)
+
+
+
