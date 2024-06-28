@@ -104,16 +104,17 @@ GO
 
 
 --ejercicio 3
-ALTER PROCEDURE spListarFacturasPorAño
-	@date varchar(4)
+CREATE PROCEDURE spListarFacturasPorAnio
+	@anio int, @mes varchar(2)
 AS
 	SELECT f.*
 	from facturas f
-	WHERE fecha like CONCAT(@date,'%') 
+	WHERE fecha like CONCAT(@anio,'%') 
 	AND f.importe < (SELECT CONVERT(DECIMAL(10,2), AVG(importe)) from facturas WHERE idCliente = f.idCliente)
+	OR f.fecha like CONCAT((@anio-1),'-',@mes,'%')
 	GROUP BY f.idFactura, f.importe, f.fecha, f.idCliente, f.idVendedor, f.iva, f.descuento
 GO
-EXEC spListarFacturasPorAño '2024'
+EXEC spListarFacturasPorAnio 2024, '02'
 GO
 
 --ejercicio #4
